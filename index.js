@@ -1,8 +1,5 @@
-// proxy takes stream,
-//
-
-
+var supervisor = require('lib/supervisor');
 
 module.exports = {
-  foo: 'bar'
+  start: supervisor.start
 }

@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for lib/supervisor.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../prettify.css">
+    <link rel="stylesheet" href="../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header low">
+    <h1>Code coverage report for <span class="entity">lib/supervisor.js</span></h1>
+    <h2>
+        Statements: <span class="metric">13.64% <small>(6 / 44)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">0% <small>(0 / 16)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">0% <small>(0 / 7)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">13.95% <small>(6 / 43)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../index.html">All files</a> &#187; <a href="index.html">lib/</a> &#187; supervisor.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var EventEmitter = require('events').EventEmitter;
+var stream = require('stream');
+var _ = require('lodash');
+var copper = require('@relinklabs/copper');
+<span class="cstat-no" title="statement not covered" >var actor = require('./actor');</span>
+<span class="cstat-no" title="statement not covered" >var supervisor = {};</span>
+&nbsp;
+/*
+ * Keeps a sliding time window, and when the error count from the passed
+ * EventEmitter goes over the limit (n), this will throw an uncaught error,
+ * stopping everything.
+ */
+<span class="cstat-no" title="statement not covered" >supervisor._trackErrors = <span class="fstat-no" title="function not covered" >function _trackErrors (n, ms, ee) {</span></span>
+<span class="cstat-no" title="statement not covered" >  var errors = 0;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  setInterval(() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    errors = 0;</span>
+  }, ms);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  ee.on('error', err =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    if (++errors &gt; n) {</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error('grind this whole shit to a halt');</span>
+    };
+  });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return ee.emit.bind(ee, 'error');</span>
+};
+&nbsp;
+/*
+ * recursing function that fires up actors
+ */
+<span class="cstat-no" title="statement not covered" >supervisor._startActors = <span class="fstat-no" title="function not covered" >function startActors(num, src, dest, rc, config, endCb) {</span></span>
+<span class="cstat-no" title="statement not covered" >  if (num === 0) {</span>
+<span class="cstat-no" title="statement not covered" >    return;</span>
+  };
+&nbsp;
+  // keep track of each actors death?? Restart a cetain number of times
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  actor</span>
+    .start(src, dest, config.createOptions, config.newProxy)
+    .on('error', <span class="fstat-no" title="function not covered" >function handleErrors (err){</span>
+&nbsp;
+      // write message back to the queue.
+<span class="cstat-no" title="statement not covered" >      var input = err.originalInput;</span>
+<span class="cstat-no" title="statement not covered" >      rc.write(input) || rc.once('drain', rc.write(input));</span>
+&nbsp;
+      // write to the error stream and recurse to restart a single actor.
+<span class="cstat-no" title="statement not covered" >      src.emit('error', err);</span>
+<span class="cstat-no" title="statement not covered" >      startActors(1, src, dest, rc, config,  endCb);</span>
+    })
+    .on('end', endCb);
+&nbsp;
+  // process.nextTick()?????
+<span class="cstat-no" title="statement not covered" >  startActors(--num, src, dest, rc, config, endCb);</span>
+};
+&nbsp;
+/*
+ * Keeps track of finished actors, returns promise that resolves when all
+ * started actors succesfully end.
+ */
+<span class="cstat-no" title="statement not covered" >supervisor._runProxies = <span class="fstat-no" title="function not covered" >function runProxies (src, dest, rc, config) {</span></span>
+<span class="cstat-no" title="statement not covered" >  var num = config.number;</span>
+<span class="cstat-no" title="statement not covered" >  var resolve;</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  function endCb () {</span>
+<span class="cstat-no" title="statement not covered" >    --num &lt; 1 &amp;&amp; resolve();</span>
+  }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  supervisor._trackErrors(100, 500, src);</span>
+<span class="cstat-no" title="statement not covered" >  supervisor._startActors(config.number, src, dest, rc, config, endCb);</span>
+<span class="cstat-no" title="statement not covered" >  return new Promise((_resolve, reject) =&gt; <span class="cstat-no" title="statement not covered" >resolve = _resolve)</span>;</span>
+};
+&nbsp;
+&nbsp;
+/**
+ * Supervisor starts the proxy process, running the proxy actor processes, monitoring
+ * them to see when they are either all finished, or have excessive errors. If they
+ * have excessive errors, the supervisor will intentionally throw and stop the system.
+ * When they come to the end of their queue, the supervisor will wait until the queue
+ * starts again, then start them up again.
+ *
+ * @param {Stream} src
+ * @param {Stream} dest
+ * @param {Stream} rc
+ * @param {Object} config
+ * @param {EventEmitter} ee (optional) Emitter which will be returned at the end.
+ * @returns {EventEmitter} Which emits all error events collected by process (except 404s...)
+ */
+<span class="cstat-no" title="statement not covered" >supervisor.start = <span class="fstat-no" title="function not covered" >function startSupervisor (rc, config, src, dest) {</span></span>
+  // config.number = number of proxies
+  // config.createOptions = function to create options.
+  // config.newProxy = function to give new proxies
+&nbsp;
+  // if we are passed in a readable stream, rather than creating on ourselves,
+  // the user might pass it in in flow mode, which we don't want, so we stop it.
+<span class="cstat-no" title="statement not covered" >  src &amp;&amp; !src.isPaused() ? src.pause() : null;</span>
+&nbsp;
+  // if we are not given streams directly, then we're being piped, in which
+  // case we create passthrough streams so we have a read() and write()
+  // interface with proper backpressure throughout the rest of our process.
+<span class="cstat-no" title="statement not covered" >  var streams = coppper.fanout();</span>
+<span class="cstat-no" title="statement not covered" >  src = src || streams.src;</span>
+<span class="cstat-no" title="statement not covered" >  dest = dest || streams.dest;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  src.on('readable', handleNewData);</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  function handleNewData () {</span>
+<span class="cstat-no" title="statement not covered" >    supervisor</span>
+      ._runProxies(rc, config, src, dest)
+      .then(() =&gt;<span class="cstat-no" title="statement not covered" >supervisor.start(rc, config, src, dest))</span>;
+&nbsp;
+    // remove listener so that our process  doesn't get restarted
+    // until all actors have fully stopped.
+<span class="cstat-no" title="statement not covered" >    src.removeListener('readable', handleNewData);</span>
+  };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return streams.ext;</span>
+};
+&nbsp;
+// on pipe, get src, pause it, and then proceed to pass it on as src.
+// dest than becomes a writeable stream we create. (two streams prevents the first
+// from turning into 'flow' mode, which would emit data events to all readers, instead
+// of each just getting one)
+&nbsp;
+<span class="cstat-no" title="statement not covered" >module.exports = supervisor;</span>
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Mar 03 2016 12:48:42 GMT+0100 (CET)</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
