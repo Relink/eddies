@@ -10,8 +10,7 @@ var supervisor = {};
  * and grinds everything to a halt if the errors exceed to provided
  * maximum number.
  */
-supervisor._trackErrors = function _trackErrors (maxErrors) {
-  var ee = new EventEmitter();
+supervisor._trackErrors = function _trackErrors (maxErrors, ee) {
   var errors = 0;
 
   ee.on('success', msg => errors = 0 )
@@ -20,14 +19,13 @@ supervisor._trackErrors = function _trackErrors (maxErrors) {
       throw new Error('grind this whole shit to a halt');
     };
   });
-
-  return ee;
 };
 
 /*
  * recursing function that fires up actors
  */
-supervisor._startActors = function startActors(num, src, dest, rc, ee, config, endCb) {
+supervisor._startActors = function startActors(num, src, dest, rc,
+                                               ee, config, endCb) {
   if (num === 0) {
     return;
   };
@@ -40,7 +38,9 @@ supervisor._startActors = function startActors(num, src, dest, rc, ee, config, e
       // write message back to the recycle/error queue
       if (rc) {
         var input = err.originalInput;
-        rc.write(input) || rc.once('drain', rc.write(input));
+
+        // TODO: handle backpresh on recycle stream!
+        rc.write(input) || rc.once('drain', () => true);
       }
 
       // write to the error stream and recurse to restart a single actor.
@@ -56,20 +56,19 @@ supervisor._startActors = function startActors(num, src, dest, rc, ee, config, e
  * Keeps track of finished actors, returns promise that resolves when all
  * started actors succesfully end.
  */
-supervisor._runProxies = function runProxies (src, dest, config, rc) {
+supervisor._runProxies = function runProxies (src, dest, ext, config, rc) {
   var num = config.number;
   var errorCount = config.errorCount || 10;
-  var resolve;
 
   if (!num){
     throw new Error('config object must include the number of workers to start!')
   }
 
-  var endCb = () => --num < 1 && resolve();
-  var ee = supervisor._trackErrors(errorCount);
-  supervisor._startActors(num, src, dest, rc, ee, config, endCb);
-
-  return new Promise((_resolve, reject) => resolve = _resolve);
+  return new Promise(function runProxiesPromise (resolve, reject){
+    var endCb = () => --num < 1 && resolve();
+    supervisor._trackErrors(errorCount, ext);
+    supervisor._startActors(num, src, dest, rc, ext, config, endCb);
+  });
 };
 
 
@@ -88,8 +87,7 @@ supervisor._runProxies = function runProxies (src, dest, config, rc) {
  * @param {Stream} dest for use only if not piping, then its the dest stream
  * @returns {Stream} Duplex Stream that can be piped into and out of
  */
-supervisor.start = function startSupervisor (config, rc, src, dest) {
-
+supervisor.start = function startSupervisor (config, rc, src, dest, ext) {
   // if we are passed in a readable stream, rather than creating on ourselves,
   // the user might pass it in in flow mode, which we don't want, so we stop it.
   src && !src.isPaused() ? src.pause() : null;
@@ -97,23 +95,25 @@ supervisor.start = function startSupervisor (config, rc, src, dest) {
   // if we are not given streams directly, then we're being piped, in which
   // case we create passthrough streams so we have a read() and write()
   // interface with proper backpressure throughout the rest of our process.
-  var streams = copper.fanout();
-  src = src || streams.src;
-  dest = dest || streams.dest;
+  if (!src) {
+    ({ext, src, dest} = copper.fanout());
+  }
 
   src.on('readable', handleNewData);
 
   function handleNewData () {
     supervisor
-      ._runProxies(src, dest, config, rc)
-      .then(() => startSupervisor(config, rc, src, dest))
+      ._runProxies(src, dest, ext, config, rc)
+      .then(() => ext.emit('success', 'Finished. Now listening for more'))
+      .then(() => startSupervisor(config, rc, src, dest, ext))
+      .catch(err => ext.emit('error', err))
 
     // remove listener so that our process  doesn't get restarted
     // until all actors have fully stopped.
     src.removeListener('readable', handleNewData);
   };
 
-  return streams.ext;
+  return ext;
 };
 
 module.exports = supervisor;

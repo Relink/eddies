@@ -1,6 +1,6 @@
 {
-  "name": "@relinklabs/proxy",
-  "version": "0.0.2",
+  "name": "@relinklabs/eddies",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Relink/rc-p90.git"
+    "url": "git+https://github.com/Relink/eddies.git"
   },
   "author": "relinklabs",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Relink/rc-p90/issues"
+    "url": "https://github.com/Relink/eddies/issues"
   },
-  "homepage": "https://github.com/Relink/rc-p90#readme",
+  "homepage": "https://github.com/Relink/eddies#readme",
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-cli": "^6.6.5",
@@ -31,11 +31,8 @@
     "sinon-chai": "^2.8.0"
   },
   "dependencies": {
-    "@relinklabs/copper": "0.0.1",
+    "@relinklabs/copper": "*",
     "bluebird": "^3.3.3",
-    "lodash": "^4.5.1",
-    "request": "^2.69.0",
-    "request-promise": "^2.0.1",
-    "through2": "^2.0.1"
+    "lodash": "^4.5.1"
   }
 }

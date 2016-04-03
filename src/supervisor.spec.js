@@ -17,7 +17,7 @@ var supervisor = proxyquire('./supervisor', {
 });
 
 describe('supervisor', () => {
-  var s1, s2, s3, config;
+  var s1, s2, s3, s4, config;
 
   beforeEach(() => {
     s1 = new stream.Readable({ objectMode: true, highwaterMark: 2 });
@@ -29,6 +29,9 @@ describe('supervisor', () => {
     s3 = new stream.Writable({ objectMode: true });
     s3._write = () => { return true };
 
+    s4 = new stream.Duplex({ objectMode: true, highWaterMark: 2,
+                             read: sinon.stub(), write: sinon.stub()})
+
     config = {
       transform: sinon.stub()
     };
@@ -36,6 +39,23 @@ describe('supervisor', () => {
     actorMock.start.reset();
   });
 
+  describe('_trackErrors', () => {
+    it('does not throw if successes come', () => {
+      var ee = new EventEmitter()
+      supervisor._trackErrors(2, ee)
+      ee.emit('error');
+      ee.emit('error');
+      ee.emit('success');
+      ee.emit('error');
+    });
+
+    it('throws if more errors than number given', () => {
+      var ee = new EventEmitter()
+      supervisor._trackErrors(1, ee)
+      ee.emit('error');
+      expect(ee.emit.bind(ee, 'error')).to.throw();
+    });
+  });
 
   describe('_startActors', () => {
     var errorCb, endCb, e1, errorEmitter;
@@ -77,7 +97,7 @@ describe('supervisor', () => {
       expect(actorMock.start.callCount).to.equal(4);
     });
 
-    it.only('handles errors even when no rc given', done => {
+    it('handles errors even when no rc given', done => {
       actorMock.start.returns(e1);
       supervisor._startActors(1, s1, s2, undefined, errorEmitter, config, endCb);
       errorEmitter.on('error', err => {
@@ -103,7 +123,7 @@ describe('supervisor', () => {
     it('does not resolve until endCb called enough times', done => {
       var resolved = false;
 
-      supervisor._runProxies(s1, s2, {number: 2, errorCount: 1}, s3)
+      supervisor._runProxies(s1, s2, s4, {number: 2, errorCount: 1}, s3)
         .then(res => {
           resolved = true;
         });
@@ -117,7 +137,7 @@ describe('supervisor', () => {
 
     it('resolves when the endCb is called and it has called startActors', () => {
       var resolved = false;
-      supervisor._runProxies(s1, s2, {number: 2, errorCount: 1}, s3)
+      supervisor._runProxies(s1, s2, s4, {number: 2, errorCount: 1}, s3)
         .then(res => {
           resolved = true;
           expect(supervisor._startActors).to.have.been.calledWith(2);
@@ -135,6 +155,16 @@ describe('supervisor', () => {
     before(() => sinon.stub(supervisor, '_runProxies'));
     beforeEach(() => supervisor._runProxies.reset());
     after(() => supervisor._runProxies.restore());
+
+    it('propogates errors to returned stream', done => {
+      supervisor._runProxies.returns(Promise.reject(new Error('foo')));
+      supervisor.start(config, s3, s1, s2, s4)
+        .on('error', err => {
+          expect(err).to.be.an.error;
+          done();
+        });
+      s1.push(1)
+    });
 
     it('removes the listener so that it doesnt call runProxies more than once', done => {
       supervisor._runProxies.returns(new Promise((resolve, reject) => true));
@@ -194,6 +224,5 @@ describe('supervisor', () => {
       stream.push(1);
       stream.push(2);
     });
-
   });
 });
