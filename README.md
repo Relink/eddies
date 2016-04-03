@@ -1,3 +1,3 @@
-# RCP-90
+# Eddies
 
-Creates a pool of proxy connections that all read from the same input stream. Outputs from all the proxies are streamed out (for piping into write stream).
+Creates a pool of "workers" in the middle of a node stream, which can perform an asyncrhonous task concurrently. Responds to downstream backpressure.

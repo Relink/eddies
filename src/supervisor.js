@@ -24,14 +24,16 @@ supervisor._trackErrors = function _trackErrors (maxErrors, ee) {
 /*
  * recursing function that fires up actors
  */
-supervisor._startActors = function startActors(num, src, dest, rc,
-                                               ee, config, endCb) {
+supervisor._startActors = function startActors(num, src, dest, ee,
+                                               transform, config, endCb) {
+
+  var rc = config.rc;
   if (num === 0) {
     return;
   };
 
   actor
-    .start(src, dest, config.transform)
+    .start(src, dest, transform)
     .on('success', msg => ee.emit('success', msg))
     .on('error', function handleErrors (err){
 
@@ -45,18 +47,18 @@ supervisor._startActors = function startActors(num, src, dest, rc,
 
       // write to the error stream and recurse to restart a single actor.
       ee.emit('error', err);
-      startActors(1, src, dest, rc, ee, config, endCb);
+      startActors(1, src, dest, ee, transform, config, endCb);
     })
     .on('end', endCb);
 
-  startActors(--num, src, dest, rc, ee, config, endCb);
+  startActors(--num, src, dest, ee, transform, config, endCb);
 };
 
 /*
  * Keeps track of finished actors, returns promise that resolves when all
  * started actors succesfully end.
  */
-supervisor._runProxies = function runProxies (src, dest, ext, config, rc) {
+supervisor._runProxies = function runProxies (src, dest, ext, transform, config) {
   var num = config.number;
   var errorCount = config.errorCount || 10;
 
@@ -67,7 +69,7 @@ supervisor._runProxies = function runProxies (src, dest, ext, config, rc) {
   return new Promise(function runProxiesPromise (resolve, reject){
     var endCb = () => --num < 1 && resolve();
     supervisor._trackErrors(errorCount, ext);
-    supervisor._startActors(num, src, dest, rc, ext, config, endCb);
+    supervisor._startActors(num, src, dest, ext, transform, config, endCb);
   });
 };
 
@@ -87,7 +89,7 @@ supervisor._runProxies = function runProxies (src, dest, ext, config, rc) {
  * @param {Stream} dest for use only if not piping, then its the dest stream
  * @returns {Stream} Duplex Stream that can be piped into and out of
  */
-supervisor.start = function startSupervisor (config, rc, src, dest, ext) {
+supervisor.start = function startSupervisor (config, transform, src, dest, ext) {
   // if we are passed in a readable stream, rather than creating on ourselves,
   // the user might pass it in in flow mode, which we don't want, so we stop it.
   src && !src.isPaused() ? src.pause() : null;
@@ -103,9 +105,9 @@ supervisor.start = function startSupervisor (config, rc, src, dest, ext) {
 
   function handleNewData () {
     supervisor
-      ._runProxies(src, dest, ext, config, rc)
+      ._runProxies(src, dest, ext, transform, config)
       .then(() => ext.emit('success', 'Finished. Now listening for more'))
-      .then(() => startSupervisor(config, rc, src, dest, ext))
+      .then(() => startSupervisor(config, transform, src, dest, ext))
       .catch(err => ext.emit('error', err))
 
     // remove listener so that our process  doesn't get restarted
