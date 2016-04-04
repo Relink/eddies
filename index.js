@@ -1,4 +1,4 @@
-var supervisor = require('lib/supervisor');
+var supervisor = require('./lib/supervisor');
 
 module.exports = {
   create: supervisor.start

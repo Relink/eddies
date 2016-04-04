@@ -12,9 +12,7 @@ var actor = {};
 actor._write = function _write (stream, data) {
   return new Promise((resolve, reject) => {
     if (!stream.write(data)){
-      return stream.once('drain', () => {
-        resolve();
-      });
+      return stream.once('drain', resolve)
     };
     resolve();
   });
@@ -29,7 +27,7 @@ actor._consume = function _consume (src, dest, transform, ee, _params) {
   }
 
   return transform.apply(null, [input].concat(_params))
-    .then(function writeToDestination ({message, params}) {
+    .then(function writeToDestination ({message, params} = {}) {
       _params = params
       return actor._write(dest, message)
     })
