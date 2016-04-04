@@ -1,4 +1,3 @@
-var errors = require('request-promise/errors');
 var Stream = require('stream');
 var EventEmitter = require('events').EventEmitter;
 var _ = require('lodash');
