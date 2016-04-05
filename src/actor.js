@@ -36,7 +36,7 @@ actor._consume = function _consume (src, dest, transform, ee, _params) {
 
       // better way to tack on input!
       err.originalInput = input;
-      throw (err);
+      ee.emit('error', err);
     });
 };
 
