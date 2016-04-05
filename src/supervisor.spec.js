@@ -13,7 +13,7 @@ var actorMock = {
 };
 
 var supervisor = proxyquire('./supervisor', {
-  './actor': actorMock
+  // './actor': actorMock
 });
 
 describe('supervisor', () => {
@@ -134,14 +134,15 @@ describe('supervisor', () => {
       });
     });
 
-    it('resolves when the endCb is called and it has called startActors', () => {
+    it('resolves when the endCb is called and it has called startActors', done  => {
       var resolved = false;
-      supervisor._runProxies(s1, s2, s4, transform, {number: 2, errorCount: 1})
+      supervisor._runProxies(s1, s2, s4, transform, {number: 3, errorCount: 1})
         .then(res => {
           resolved = true;
-          expect(supervisor._startActors).to.have.been.calledWith(2);
+          expect(supervisor._startActors).to.have.been.calledWith(3);
           done();
         })
+      endCb();
       endCb();
       endCb();
       expect(resolved).to.be.false;
@@ -224,4 +225,5 @@ describe('supervisor', () => {
       stream.push(2);
     });
   });
+
 });

@@ -26,7 +26,6 @@ supervisor._trackErrors = function _trackErrors (maxErrors, ee) {
  */
 supervisor._startActors = function startActors(num, src, dest, ee,
                                                transform, config, endCb) {
-
   var rc = config.rc;
   if (num === 0) {
     return;
@@ -51,7 +50,10 @@ supervisor._startActors = function startActors(num, src, dest, ee,
     })
     .on('end', endCb);
 
-  startActors(--num, src, dest, ee, transform, config, endCb);
+  // Run each actor asynchronously, so the read's from the incoming stream can
+  // catch up.
+  setTimeout(() => startActors(--num, src, dest, ee, transform, config, endCb));
+
 };
 
 /*
@@ -104,8 +106,10 @@ supervisor.start = function startSupervisor (config, transform, src, dest, ext) 
   src.on('readable', handleNewData);
 
   function handleNewData () {
+
     supervisor
       ._runProxies(src, dest, ext, transform, config)
+      .then(() => console.log('supervisor resolved: ', config))
       .then(() => ext.emit('success', 'Finished. Now listening for more'))
       .then(() => startSupervisor(config, transform, src, dest, ext))
       .catch(err => ext.emit('error', err))

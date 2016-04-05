@@ -41,6 +41,7 @@ actor._consume = function _consume (src, dest, transform, ee, _params) {
 };
 
 actor.start = function startActor (src, dest, transform) {
+
   // Make sure we can read from our source
   if (!src instanceof Stream.Readable) {
     throw new TypeError('src needs to be a Readable stream with a read function')
