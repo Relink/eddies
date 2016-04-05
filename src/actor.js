@@ -32,7 +32,7 @@ actor._consume = function _consume (src, dest, transform, ee, _params) {
     })
     .then(ee.emit.bind(ee, 'success'))
     .then(() => actor._consume(src, dest, transform, ee, _params))
-    .catch(errors.StatusCodeError, err => {
+    .catch(err => {
 
       // better way to tack on input!
       err.originalInput = input;
@@ -50,7 +50,7 @@ actor.start = function startActor (src, dest, transform) {
 
   try {
     actor
-      ._consume(src, dest, ee, transform)
+      ._consume(src, dest, transform, ee)
       .then(success => ee.emit('end', success))
       .catch(err => _emitAndCleanup(ee, err))
       .finally(() => ee.removeAllListeners())
