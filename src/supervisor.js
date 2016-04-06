@@ -14,7 +14,7 @@ supervisor._trackErrors = function _trackErrors (maxErrors, ee) {
   var errors = 0;
 
   ee.on('success', msg => errors = 0 )
-  ee.on('error', err => {
+  ee.on('warn', err => {
     if (++errors > maxErrors) {
       throw new Error('grind this whole shit to a halt');
     };
@@ -45,7 +45,7 @@ supervisor._startActors = function startActors(num, src, dest, ee,
       }
 
       // write to the error stream and recurse to restart a single actor.
-      ee.emit('error', err);
+      ee.emit('warn', err);
       startActors(1, src, dest, ee, transform, config, endCb);
     })
     .on('end', endCb);

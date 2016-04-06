@@ -6,7 +6,7 @@
   "scripts": {
     "test": "node_modules/.bin/mocha lib/**/*.spec.js",
     "compile": "node_modules/babel-cli/bin/babel.js src -d lib -s inline",
-    "tdd": "node_modules/.bin/mocha src/**/*.spec.js eddies.integration.js --compilers js:babel-register --watch --colors"
+    "tdd": "node_modules/.bin/mocha src/**/*.spec.js --compilers js:babel-register --watch --colors"
   },
   "repository": {
     "type": "git",

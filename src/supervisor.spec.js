@@ -13,7 +13,7 @@ var actorMock = {
 };
 
 var supervisor = proxyquire('./supervisor', {
-  // './actor': actorMock
+  './actor': actorMock
 });
 
 describe('supervisor', () => {
@@ -42,17 +42,17 @@ describe('supervisor', () => {
     it('does not throw if successes come', () => {
       var ee = new EventEmitter()
       supervisor._trackErrors(2, ee)
-      ee.emit('error');
-      ee.emit('error');
+      ee.emit('warn');
+      ee.emit('warn');
       ee.emit('success');
-      ee.emit('error');
+      ee.emit('warn');
     });
 
     it('throws if more errors than number given', () => {
       var ee = new EventEmitter()
       supervisor._trackErrors(1, ee)
-      ee.emit('error');
-      expect(ee.emit.bind(ee, 'error')).to.throw();
+      ee.emit('warn');
+      expect(ee.emit.bind(ee, 'warn')).to.throw();
     });
   });
 
@@ -73,7 +73,7 @@ describe('supervisor', () => {
 
       sinon.stub(s3, 'write', () => true);
 
-      errorEmitter.on('error', err => {
+      errorEmitter.on('warn', err => {
         expect(err).to.be.an('error');
 
         // give next tick so actor.start gets called again
@@ -90,16 +90,19 @@ describe('supervisor', () => {
       e1.emit('error', error);
     });
 
-    it('synchronously starts the number of actors it is asked to start', () => {
+    it('asynchronously starts the number of actors it is asked to start', done => {
       actorMock.start.returns(e1);
       supervisor._startActors(4, s1, s2, errorEmitter, transform, config, endCb);
-      expect(actorMock.start.callCount).to.equal(4);
+      setTimeout(() => {
+        expect(actorMock.start.callCount).to.equal(4);
+        done();
+      }, 20);
     });
 
     it('handles errors even when no rc given', done => {
       actorMock.start.returns(e1);
       supervisor._startActors(1, s1, s2, errorEmitter, transform, config, endCb);
-      errorEmitter.on('error', err => {
+      errorEmitter.on('warn', err => {
         expect(err).to.be.an.error;
         done();
       });
