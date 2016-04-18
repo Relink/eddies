@@ -11,9 +11,9 @@ var actor = {};
 actor._write = function _write (stream, data) {
   return new Promise((resolve, reject) => {
     if (!stream.write(data)){
-      return stream.once('drain', resolve)
+      return stream.once('drain', resolve.bind(null, data))
     };
-    resolve();
+    resolve(data);
   });
 };
 
