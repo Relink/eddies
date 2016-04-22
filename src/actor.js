@@ -32,12 +32,7 @@ actor._consume = function _consume (src, dest, transform, ee, _params) {
     })
     .then(ee.emit.bind(ee, 'success'))
     .then(() => actor._consume(src, dest, transform, ee, _params))
-    .catch(err => {
-
-      // better way to tack on input!
-      err.originalInput = input;
-      ee.emit('error', err);
-    });
+    .catch(err => ee.emit('error', err))
 };
 
 actor.start = function startActor (src, dest, transform) {

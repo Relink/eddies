@@ -24,7 +24,7 @@ describe('actor', () => {
   describe('_write', () => {
 
     it('calls the callback immediately if the write queue is open', done => {
-      actor._write(s2, 'foo').then(done);
+      actor._write(s2, 'foo').then(() => done());
     });
 
     it('calls the callback after drain, if the write queue is full', done => {
