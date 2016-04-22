@@ -109,7 +109,7 @@ supervisor.start = function startSupervisor (config, transform, src, dest, ext) 
 
     supervisor
       ._runProxies(src, dest, ext, transform, config)
-      .then(() => ext.emit('success', 'Finished. Now listening for more'))
+      .then(() => ext.emit('finish'))
       .then(() => startSupervisor(config, transform, src, dest, ext))
       .catch(err => ext.emit('error', err))
 
