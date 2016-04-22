@@ -16,7 +16,7 @@ supervisor._trackErrors = function _trackErrors (maxErrors, ee) {
   ee.on('success', msg => errors = 0 )
   ee.on('warn', err => {
     if (++errors > maxErrors) {
-      throw new Error('grind this whole shit to a halt');
+      ee.emit('error', new Error('grind this whole shit to a halt'))
     };
   });
 };
