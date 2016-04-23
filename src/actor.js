@@ -22,7 +22,7 @@ actor._consume = function _consume (src, dest, transform, ee, _params) {
 
   input = src.read();
   if (!input) {
-    return Promise.resolve('end');
+    return Promise.resolve();
   }
 
   return transform.apply(null, [input].concat(_params))

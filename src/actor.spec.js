@@ -50,12 +50,16 @@ describe('actor', () => {
 
   describe('_consume', () => {
     var transform, ee;
+    var writeStub = sinon.stub();
 
+    before(() => sinon.stub(actor, '_write', writeStub))
     beforeEach(() => {
-      actor._write = sinon.stub().returns(Promise.resolve(null));
+      writeStub.returns(Promise.resolve(null));
+      actor._write.reset();
       transform = sinon.stub();
       ee = new EventEmitter();
     });
+    after(() => actor._write.restore());
 
     it('calls transform with input from stream', done => {
       transform.returns(Promise.resolve({}))
@@ -93,8 +97,6 @@ describe('actor', () => {
       s1.push('url2');
       s1.push(null);
 
-      actor._write = sinon.stub();
-
       actor
         ._consume(s1, s2, transform, ee)
         .catch(err => {
@@ -106,9 +108,14 @@ describe('actor', () => {
   });
 
   describe('start', () => {
+    var consumeStub = sinon.stub();
+    before(() => {
+      sinon.stub(actor, '_consume', consumeStub)
+    })
     beforeEach(() => {
-      actor._consume = sinon.stub();
+      actor._consume.reset();
     });
+    after( () => actor._consume.restore());
 
     it('emits on end event only after the consumer resolves as finished', done  => {
       var resolve;
@@ -116,7 +123,7 @@ describe('actor', () => {
         resolve = _resolve
       });
 
-      actor._consume.returns(promise);
+      consumeStub.returns(promise);
 
       var ended = false;
       var e = actor.start(s1, s2);
@@ -137,7 +144,7 @@ describe('actor', () => {
 
     it('emits an error event if the consumer rejects', done => {
       var error = new Error('foo');
-      actor._consume.returns(Promise.reject(error));
+      consumeStub.returns(Promise.reject(error));
 
       var a = actor.start(s1, s2);
       a.on('error', err => {
@@ -150,7 +157,7 @@ describe('actor', () => {
     });
 
     it('emits an error event if consumer throws for any reason', done => {
-      actor._consume.throws();
+      consumeStub.throws();
       var a = actor.start(s1, s2);
       a.on('error', err => {
         expect(err).to.be.an('error');

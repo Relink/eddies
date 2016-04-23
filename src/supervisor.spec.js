@@ -42,17 +42,17 @@ describe('supervisor', () => {
     it('does not throw if successes come', () => {
       var ee = new EventEmitter()
       supervisor._trackErrors(2, ee)
-      ee.emit('warn');
-      ee.emit('warn');
-      ee.emit('success');
-      ee.emit('warn');
+      ee.emit('eddies:warn');
+      ee.emit('eddies:warn');
+      ee.emit('eddies:success');
+      ee.emit('eddies:warn');
     });
 
     it('throws if more errors than number given', () => {
       var ee = new EventEmitter()
       supervisor._trackErrors(1, ee)
-      ee.emit('warn');
-      expect(ee.emit.bind(ee, 'warn')).to.throw();
+      ee.emit('eddies:warn');
+      expect(ee.emit.bind(ee, 'eddies:warn')).to.throw();
     });
   });
 
@@ -73,7 +73,7 @@ describe('supervisor', () => {
 
       sinon.stub(s3, 'write', () => true);
 
-      errorEmitter.on('warn', err => {
+      errorEmitter.on('eddies:warn', err => {
         expect(err).to.be.an('error');
 
         // give next tick so actor.start gets called again
@@ -102,7 +102,7 @@ describe('supervisor', () => {
     it('handles errors even when no rc given', done => {
       actorMock.start.returns(e1);
       supervisor._startActors(1, s1, s2, errorEmitter, transform, config, endCb);
-      errorEmitter.on('warn', err => {
+      errorEmitter.on('eddies:warn', err => {
         expect(err).to.be.an.error;
         done();
       });
@@ -214,7 +214,6 @@ describe('supervisor', () => {
       });
     });
 
-
     it('returns a readable stream', done => {
       var stream = supervisor.start(s3, config);
 
@@ -228,5 +227,6 @@ describe('supervisor', () => {
       stream.push(2);
     });
   });
+
 
 });

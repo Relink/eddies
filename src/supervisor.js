@@ -13,8 +13,8 @@ var supervisor = {};
 supervisor._trackErrors = function _trackErrors (maxErrors, ee) {
   var errors = 0;
 
-  ee.on('success', msg => errors = 0 )
-  ee.on('warn', err => {
+  ee.on('eddies:success', msg => errors = 0 )
+  ee.on('eddies:warn', err => {
     if (++errors > maxErrors) {
       ee.emit('error', new Error('grind this whole shit to a halt'))
     };
@@ -24,7 +24,7 @@ supervisor._trackErrors = function _trackErrors (maxErrors, ee) {
 /*
  * recursing function that fires up actors
  */
-supervisor._startActors = function startActors(num, src, dest, ee,
+supervisor._startActors = function startActors(num, src, dest, ext,
                                                transform, config, endCb) {
   var rc = config.rc;
   if (num === 0) {
@@ -33,7 +33,7 @@ supervisor._startActors = function startActors(num, src, dest, ee,
 
   actor
     .start(src, dest, transform)
-    .on('success', msg => ee.emit('success', msg))
+    .on('success', msg => ext.emit('eddies:success', msg))
     .on('error', function handleErrors (err){
 
       // write message back to the recycle/error queue
@@ -45,14 +45,14 @@ supervisor._startActors = function startActors(num, src, dest, ee,
       }
 
       // write to the error stream and recurse to restart a single actor.
-      ee.emit('warn', err);
-      startActors(1, src, dest, ee, transform, config, endCb);
+      ext.emit('eddies:warn', err);
+      startActors(1, src, dest, ext, transform, config, endCb);
     })
     .on('end', endCb);
 
   // Run each actor asynchronously, so the read's from the incoming stream can
   // catch up.
-  setTimeout(() => startActors(--num, src, dest, ee, transform, config, endCb));
+  setTimeout(() => startActors(--num, src, dest, ext, transform, config, endCb));
 
 };
 
@@ -109,7 +109,7 @@ supervisor.start = function startSupervisor (config, transform, src, dest, ext) 
 
     supervisor
       ._runProxies(src, dest, ext, transform, config)
-      .then(() => ext.emit('finish'))
+      .then(() => ext.emit('eddies:finish'))
       .then(() => startSupervisor(config, transform, src, dest, ext))
       .catch(err => ext.emit('error', err))
 
