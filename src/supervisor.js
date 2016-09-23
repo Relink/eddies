@@ -26,7 +26,6 @@ supervisor._trackErrors = function _trackErrors (maxErrors, ee) {
  */
 supervisor._startActors = function startActors(num, src, dest, ext,
                                                transform, config, endCb) {
-  var rc = config.rc;
   if (num === 0) {
     return;
   };
@@ -35,14 +34,6 @@ supervisor._startActors = function startActors(num, src, dest, ext,
     .start(src, dest, transform)
     .on('success', msg => ext.emit('eddies:success', msg))
     .on('error', function handleErrors (err){
-
-      // write message back to the recycle/error queue
-      if (rc) {
-        var input = err.originalInput;
-
-        // TODO: handle backpresh on recycle stream!
-        rc.write(input) || rc.once('drain', () => true);
-      }
 
       // write to the error stream and recurse to restart a single actor.
       ext.emit('eddies:warn', err);

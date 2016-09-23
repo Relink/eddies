@@ -10,7 +10,13 @@ var proxyquire = require('proxyquire');
 var EventEmitter = require('events').EventEmitter;
 var errors = require('request-promise/errors');
 
-var actor = require('./actor')
+var copperMock = {
+  write: sinon.stub().returns(Promise.resolve(null))
+}
+
+var actor = proxyquire('./actor', {
+  '@relinklabs/copper': copperMock
+});
 
 describe('actor', () => {
   var s1, s2, ee;
@@ -21,45 +27,14 @@ describe('actor', () => {
     s2._transform = (d, e, cb) => cb(null, d);
   });
 
-  describe('_write', () => {
-
-    it('calls the callback immediately if the write queue is open', done => {
-      actor._write(s2, 'foo').then(() => done());
-    });
-
-    it('calls the callback after drain, if the write queue is full', done => {
-
-      s2.write = sinon.stub();
-      s2.write.returns(false);
-      var resolved = false;
-
-      actor
-        ._write(s2, 'foo')
-        .then(() => {
-          resolved = true;
-          done();
-        });
-
-      setTimeout(() => {
-        expect(resolved).to.be.false;
-        s2.write.returns(true);
-        s2.emit('drain');
-      });
-    });
-  });
-
   describe('_consume', () => {
     var transform, ee;
-    var writeStub = sinon.stub();
 
-    before(() => sinon.stub(actor, '_write', writeStub))
     beforeEach(() => {
-      writeStub.returns(Promise.resolve(null));
-      actor._write.reset();
+      copperMock.write.reset();
       transform = sinon.stub();
       ee = new EventEmitter();
     });
-    after(() => actor._write.restore());
 
     it('calls transform with input from stream', done => {
       transform.returns(Promise.resolve({}))
@@ -100,7 +75,7 @@ describe('actor', () => {
       actor
         ._consume(s1, s2, transform, ee)
         .catch(err => {
-          expect(actor._write).to.not.have.been.called;
+          expect(copperMock.write).to.not.have.been.called;
           expect(err).to.equal(error);
           done();
         });
